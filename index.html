@@ -247,7 +247,11 @@
       </div>
 
       <div style="margin-bottom: 20px;">
-        <button class="btn btn-secondary" id="share-card-btn" style="margin-bottom: 10px;">결과 카드 공유하기 📤</button>
+        <!-- 공유하기 & 다시하기 나란히 배치 -->
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+          <button class="btn btn-secondary" id="share-card-btn" style="flex: 1;">결과 카드 공유하기 📤</button>
+          <button class="btn btn-secondary" id="retry-btn" style="flex: 1;">다시하기 🔄</button>
+        </div>
         <a href="https://www.plabfootball.com/" target="_blank" class="btn btn-plab" style="margin-bottom: 12px;">
           플랩풋볼 매치 신청하러 가기 ⚽
         </a>
@@ -876,7 +880,25 @@ function generatePitchSVG(activePos) {
         loginModal.classList.remove('active');
         initChatView();
       });
+      document.getElementById('retry-btn').addEventListener('click', () => {
+        if (confirm('모든 진단 기록을 초기화하고 처음부터 다시 시작하시겠습니까?')) {
+          // 1. 점수 및 상태 값 초기화
+          state.currentQuestionIdx = 0;
+          state.scores = { F: 0, B: 0, C: 0, P: 0, I: 0, T: 0, A: 0, S: 0 };
+          state.typeCode = '';
+          state.primaryKeyword = '';
+          state.starterContext = null;
 
+          // 2. 브라우저 저장소(localStorage)에 남은 진단 결과 삭제
+          localStorage.removeItem('futsal_test_state');
+
+          // 3. 안내 알림 표시
+          alert('모든 응답 데이터가 초기화되었습니다. 처음으로 돌아갑니다! ⚽');
+
+          // 4. 인트로 화면으로 이동
+          switchView('view-intro');
+        }
+      });
       const shareModal = document.getElementById('share-modal');
       document.getElementById('share-card-btn').addEventListener('click', () => {
         shareModal.classList.add('active');
