@@ -6,23 +6,6 @@
   <title>Futsal Play Style Test - 나만의 풋살 플레이 스타일</title>
   <style>
     :root {
-      --bg-primary: #0f172a;
-      --bg-surface: #1e293b;
-      --bg-subtle: #334155;
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --text-muted: #64748b;
-      --accent-green: #22c55e;
-      --accent-hover: #16a34a;
-      --border-color: #334155;
-      --brand-lime: #a3e635;
-      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      --radius-lg: 16px;
-      --radius-md: 12px;
-      --radius-sm: 8px;
-    }
-
-    [data-theme="light"] {
       --bg-primary: #f8fafc;
       --bg-surface: #ffffff;
       --bg-subtle: #f1f5f9;
@@ -34,6 +17,9 @@
       --border-color: #e2e8f0;
       --brand-lime: #65a30d;
       --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
@@ -171,7 +157,6 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0-4 18l4-5 4 5a10 10 0 0 0-4-18z"/></svg>
         Futsal Play Style
       </div>
-      <button class="theme-toggle" id="theme-toggle-btn">Light Mode</button>
     </header>
 
     <!-- 1. INTRO VIEW -->
@@ -299,7 +284,8 @@
           <button class="btn btn-secondary" id="share-card-btn" style="flex: 1;">결과 카드 공유하기 📤</button>
           <button class="btn btn-secondary" id="retry-btn" style="flex: 1;">다시하기 🔄</button>
         </div>
-        <a href="https://www.plabfootball.com/" target="_blank" class="btn btn-plab" style="margin-bottom: 12px;">
+        <!-- 플랩풋볼 특정 매치 이동 버튼 -->
+        <a href="https://www.plabfootball.com/match/1031180" target="_blank" class="btn btn-plab" style="margin-bottom: 12px;">
           플랩풋볼 매치 신청하러 가기 ⚽
         </a>
 
@@ -901,13 +887,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const themeBtn = document.getElementById('theme-toggle-btn');
-      themeBtn.addEventListener('click', () => {
-        const isLight = document.body.getAttribute('data-theme') === 'light';
-        document.body.setAttribute('data-theme', isLight ? 'dark' : 'light');
-        themeBtn.textContent = isLight ? 'Light Mode' : 'Dark Mode';
-      });
-
       document.getElementById('start-btn').addEventListener('click', () => {
         state.currentQuestionIdx = 0;
         state.scores = { F: 0, B: 0, C: 0, P: 0, I: 0, T: 0, A: 0, S: 0 };
