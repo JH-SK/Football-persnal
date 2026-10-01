@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Futsal Play Style Test - 나만의 풋살 플레이 스타일</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-subtle: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #64748b;
+      --accent-green: #22c55e;
+      --accent-hover: #16a34a;
+      --border-color: #334155;
+      --brand-lime: #a3e635;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --accent-green: #16a34a;
+      --accent-hover: #15803d;
+      --border-color: #e2e8f0;
+      --brand-lime: #65a30d;
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    body { background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; transition: background-color 0.3s, color 0.3s; }
+
+    .app-container { width: 100%; max-width: 600px; padding: 20px; margin: 0 auto; }
+    
+    header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+    .logo { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.5px; color: var(--brand-lime); display: flex; align-items: center; gap: 8px; }
+    .theme-toggle { background: none; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 20px; color: var(--text-secondary); cursor: pointer; font-size: 0.85rem; }
+
+    .card { background: var(--bg-surface); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 14px 20px; border-radius: var(--radius-md); font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; border: none; text-decoration: none; gap: 8px; }
+    .btn-primary { background-color: var(--accent-green); color: #ffffff; }
+    .btn-primary:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary { background-color: var(--bg-subtle); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background-color: var(--border-color); }
+    .btn-plab { background-color: #1a202c; color: #a3e635; border: 1.5px solid #a3e635; }
+    .btn-plab:hover { background-color: #2d3748; }
+
+    .subtext { font-size: 0.82rem; color: var(--text-muted); text-align: center; margin-top: 8px; }
+
+    .intro-title { font-size: 1.75rem; font-weight: 800; line-height: 1.3; margin-bottom: 12px; letter-spacing: -0.5px; word-break: keep-all; }
+    .intro-desc { color: var(--text-secondary); font-size: 0.98rem; margin-bottom: 24px; word-break: keep-all; }
+
+    .progress-bar-bg { width: 100%; height: 6px; background-color: var(--bg-subtle); border-radius: 3px; margin-bottom: 24px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background-color: var(--brand-lime); width: 0%; transition: width 0.3s ease; }
+    .question-step { font-size: 0.85rem; font-weight: 700; color: var(--brand-lime); text-transform: uppercase; margin-bottom: 8px; }
+    .question-text { font-size: 1.2rem; font-weight: 700; margin-bottom: 24px; word-break: keep-all; line-height: 1.4; }
+    .option-btn { width: 100%; text-align: left; padding: 18px 20px; margin-bottom: 12px; background: var(--bg-surface); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.95rem; cursor: pointer; transition: all 0.2s; word-break: keep-all; line-height: 1.4; }
+    .option-btn:hover { border-color: var(--brand-lime); background-color: var(--bg-subtle); }
+
+    .hero-motif { width: 64px; height: 64px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border-radius: 50%; color: var(--brand-lime); }
+    .hero-badge { display: inline-block; padding: 4px 12px; background: var(--bg-subtle); border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: var(--brand-lime); margin-bottom: 8px; }
+    .type-title { font-size: 2rem; font-weight: 800; margin-bottom: 4px; text-align: center; letter-spacing: -0.5px; }
+    .type-pos { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-align: center; margin-bottom: 12px; }
+    .type-tagline { font-size: 1.05rem; font-weight: 700; color: var(--brand-lime); text-align: center; margin-bottom: 16px; word-break: keep-all; }
+    .type-desc { font-size: 0.92rem; color: var(--text-secondary); text-align: center; line-height: 1.6; word-break: keep-all; }
+    
+    .section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; }
+    .spectrum-item { margin-bottom: 16px; }
+    .spectrum-labels { display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+    .spectrum-track { position: relative; width: 100%; height: 8px; background: var(--bg-subtle); border-radius: 4px; }
+    .spectrum-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; background: var(--brand-lime); border: 2px solid var(--bg-surface); border-radius: 50%; transition: left 0.5s ease; }
+
+    .matching-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; text-align: center; }
+    .matching-card { background: var(--bg-subtle); padding: 12px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); }
+    .matching-label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .matching-val { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); word-break: keep-all; }
+
+    .keyword-card { background: linear-gradient(135deg, rgba(163,230,53,0.08) 0%, rgba(0,0,0,0) 100%); border: 1.5px solid var(--brand-lime); }
+    .keyword-title { font-size: 0.8rem; font-weight: 700; color: var(--brand-lime); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .keyword-main { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; color: var(--text-primary); }
+    .keyword-desc { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px; word-break: keep-all; }
+    .reflection-box { background: var(--bg-surface); padding: 14px; border-radius: var(--radius-md); border: 1px dashed var(--border-color); margin-bottom: 16px; }
+    .reflection-q { font-weight: 700; font-size: 0.92rem; color: var(--text-primary); word-break: keep-all; line-height: 1.4; }
+
+    .accordion-toggle { width: 100%; padding: 14px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .accordion-content { display: none; padding-top: 12px; }
+    .accordion-content.open { display: block; }
+
+    .family-title { font-size: 0.9rem; font-weight: 700; color: var(--brand-lime); margin: 16px 0 8px; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+    .type-mini-card { background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); font-size: 0.85rem; border: 1px solid var(--border-color); }
+    .type-mini-name { font-weight: 700; color: var(--text-primary); }
+    .type-mini-tag { font-size: 0.75rem; color: var(--text-muted); word-break: keep-all; }
+
+    .input-group { margin-bottom: 14px; text-align: left; }
+    .input-label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+    .form-input { width: 100%; background: var(--bg-subtle); border: 1px solid var(--border-color); padding: 12px 14px; border-radius: var(--radius-sm); color: var(--text-primary); font-size: 0.95rem; outline: none; }
+    .form-input:focus { border-color: var(--brand-lime); }
+
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: none; justify-content: center; align-items: flex-end; z-index: 1000; opacity: 0; transition: opacity 0.2s ease; }
+    .modal-overlay.active { display: flex; opacity: 1; }
+    .modal-sheet { background: var(--bg-surface); width: 100%; max-width: 600px; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 24px; transform: translateY(100%); transition: transform 0.3s ease; }
+    .modal-overlay.active .modal-sheet { transform: translateY(0); }
+
+    .chat-container { display: flex; flex-direction: column; height: 80vh; max-height: 700px; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 12px 0; display: flex; flex-direction: column; gap: 16px; }
+    .chat-bubble { max-width: 85%; padding: 14px 18px; border-radius: var(--radius-md); font-size: 0.92rem; line-height: 1.5; word-break: keep-all; }
+    .chat-bubble.agent { background: var(--bg-subtle); color: var(--text-primary); border-bottom-left-radius: 4px; align-self: flex-start; }
+    .chat-bubble.user { background: var(--brand-lime); color: #0f172a; font-weight: 600; border-bottom-right-radius: 4px; align-self: flex-end; }
+    
+    .suggestions-wrapper { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0; margin-bottom: 8px; }
+    .chip { flex-shrink: 0; background: var(--bg-surface); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 20px; font-size: 0.82rem; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+    .chip:hover { border-color: var(--brand-lime); color: var(--brand-lime); }
+
+    .chat-input-bar { display: flex; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border-color); }
+    .chat-input { flex: 1; background: var(--bg-surface); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.95rem; outline: none; }
+    .chat-input:focus { border-color: var(--brand-lime); }
+    .chat-send-btn { width: 48px; height: 48px; background: var(--brand-lime); color: #0f172a; border: none; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0-4 18l4-5 4 5a10 10 0 0 0-4-18z"/></svg>
+        Futsal Play Style
+      </div>
+      <button class="theme-toggle" id="theme-toggle-btn">Light Mode</button>
+    </header>
+
+    <!-- 1. INTRO VIEW -->
+    <section id="view-intro" class="view-section active">
+      <div class="card" style="text-align: center; padding-top: 40px; padding-bottom: 40px;">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--brand-lime); margin-bottom: 12px; text-transform: uppercase;">Futsal Type Diagnostic</div>
+        <h1 class="intro-title">나의 풋살 플레이 스타일은?<br>피치 위 나의 본능 찾기</h1>
+        <p class="intro-desc">12가지 실전 경기 상황을 통해<br>나의 선호 포지션, 닮은 해외 축구 스타,<br>그리고 찰떡궁합 클럽까지 알아봅니다.</p>
+        <button class="btn btn-primary" id="start-btn">테스트 시작하기 ⚽</button>
+      </div>
+    </section>
+
+    <!-- 2. QUIZ VIEW -->
+    <section id="view-quiz" class="view-section">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="quiz-progress"></div>
+      </div>
+      <div class="card">
+        <div class="question-step" id="quiz-step-label">MATCH SITUATION 01</div>
+        <div class="question-text" id="quiz-question-text">질문 텍스트가 표시됩니다.</div>
+        <button class="option-btn" id="option-a-btn">A 선택지</button>
+        <button class="option-btn" id="option-b-btn">B 선택지</button>
+      </div>
+    </section>
+
+    <!-- 3. RESULT VIEW -->
+    <section id="view-result" class="view-section">
+      <div class="card" style="text-align: center;">
+        <div class="hero-badge">MY FUTSAL TYPE</div>
+        <div class="hero-motif" id="res-motif">⚽</div>
+        <h2 class="type-title" id="res-type-name">폭격기</h2>
+        <div class="type-pos" id="res-type-pos">추천 포지션: 피보 (Pivo) / 아라 (Ala)</div>
+        <div class="type-tagline" id="res-type-tagline">“각도 나오면 일단 때린다!”</div>
+        <p class="type-desc" id="res-type-desc">골문 앞에서의 폭발적인 슈팅과 본능적인 감각으로 득점을 만들어내는 유형입니다.</p>
+      </div>
+
+      <div class="card">
+        <div class="section-title">나의 경기 스타일 스펙트럼</div>
+        <div class="spectrum-item">
+          <div class="spectrum-labels"><span>득점 노림 (Finisher)</span><span>빌드업 위주 (Build-up)</span></div>
+          <div class="spectrum-track"><div class="spectrum-dot" id="dot-fb"></div></div>
+        </div>
+        <div class="spectrum-item">
+          <div class="spectrum-labels"><span>1대1 돌파 (Crack)</span><span>공간 패스 (Passer)</span></div>
+          <div class="spectrum-track"><div class="spectrum-dot" id="dot-cp"></div></div>
+        </div>
+        <div class="spectrum-item">
+          <div class="spectrum-labels"><span>야성/본능 (Instinct)</span><span>전술/위치 (Tactics)</span></div>
+          <div class="spectrum-track"><div class="spectrum-dot" id="dot-it"></div></div>
+        </div>
+        <div class="spectrum-item">
+          <div class="spectrum-labels"><span>전방 압박 (Aggressive)</span><span>템포 조절 (Stable)</span></div>
+          <div class="spectrum-track"><div class="spectrum-dot" id="dot-as"></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">나와 닮은 스타 & 추천 클럽</div>
+        <div class="matching-grid">
+          <div class="matching-card">
+            <div class="matching-label">⚡ 현역 스타</div>
+            <div class="matching-val" id="res-star-current">홀란드</div>
+          </div>
+          <div class="matching-card">
+            <div class="matching-label">👑 클래식 전설</div>
+            <div class="matching-val" id="res-star-classic">호나우두</div>
+          </div>
+          <div class="matching-card">
+            <div class="matching-label">🛡️ 추천 클럽</div>
+            <div class="matching-val" id="res-club">맨체스터 시티</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card keyword-card">
+        <div class="keyword-title">피치 위 내 대표 능력치</div>
+        <div class="keyword-main" id="res-keyword-name">무적의 골 결정력</div>
+        <p class="keyword-desc" id="res-keyword-desc">“찬스가 왔을 때 주저하지 않고 슈팅으로 마무리하는 성향이 두드러집니다.”</p>
+        
+        <div class="reflection-box">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">실제 경기에서 당신의 경험은?</div>
+          <div class="reflection-q" id="res-reflection-q">“경기가 잘 풀리지 않을 때, 직접 슈팅으로 활로를 뚫었던 순간이 있었나요?”</div>
+        </div>
+
+        <button class="btn btn-primary" id="go-chat-cta">내 전술 스타일 얘기해보기 →</button>
+        <div class="subtext">AI 전술 코치와 나의 풋살 스타일에 대해 수다를 나눠보세요.</div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <button class="btn btn-secondary" id="share-card-btn" style="margin-bottom: 10px;">결과 카드 공유하기 📤</button>
+        <a href="https://www.plabfootball.com/" target="_blank" class="btn btn-plab" style="margin-bottom: 12px;">
+          플랩풋볼 매치 신청하러 가기 ⚽
+        </a>
+
+        <button class="accordion-toggle" id="toggle-gallery-btn">
+          <span>16가지 풋살 유형 전체 둘러보기</span>
+          <span>▼</span>
+        </button>
+        <div class="accordion-content card" id="gallery-accordion">
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">피치 위를 누비는 16가지 플레이 스타일 그룹입니다.</p>
+          <div id="gallery-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. CHAT VIEW -->
+    <section id="view-chat" class="view-section">
+      <div class="card chat-container">
+        <div style="padding-bottom: 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+            <span style="width: 8px; height: 8px; background: var(--brand-lime); border-radius: 50%;"></span>
+            AI 풋살 전술 코치
+          </div>
+          <span style="font-size: 0.78rem; color: var(--text-muted);" id="chat-type-tag">폭격기 · 무적의 골 결정력</span>
+        </div>
+
+        <div class="chat-messages" id="chat-messages-box"></div>
+        <div class="suggestions-wrapper" id="chat-suggestions"></div>
+
+        <div class="chat-input-bar">
+          <input type="text" class="chat-input" id="chat-input-field" placeholder="내 스타일이나 경험을 적어주세요...">
+          <button class="chat-send-btn" id="chat-send-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-sheet">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 6px;">전술 수다 시작하기</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">간단한 정보만 입력하시면 AI와 대화가 이어집니다.</p>
+      </div>
+      
+      <div class="input-group">
+        <label class="input-label">이름 / 닉네임</label>
+        <input type="text" class="form-input" id="user-name-input" placeholder="피치 위 닉네임을 입력하세요">
+      </div>
+      <div class="input-group">
+        <label class="input-label">휴대폰 번호</label>
+        <input type="tel" class="form-input" id="user-phone-input" placeholder="010-0000-0000">
+      </div>
+
+      <button class="btn btn-primary" id="mock-login-btn">대화 시작하기 →</button>
+      <button class="btn btn-secondary" id="modal-close-btn" style="margin-top: 8px;">닫기</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="share-modal">
+    <div class="modal-sheet" style="padding: 20px;">
+      <div style="background: var(--bg-surface); border: 2px solid var(--brand-lime); border-radius: var(--radius-md); padding: 20px; text-align: center; margin-bottom: 16px;">
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--brand-lime); text-transform: uppercase;">FUTSAL STYLE CARD</div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; margin: 4px 0;" id="share-card-type">폭격기</h2>
+        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;" id="share-card-pos">피보 (Pivo)</div>
+        <div style="font-size: 0.9rem; font-weight: 700; color: var(--brand-lime); margin-bottom: 12px;" id="share-card-tagline">“각도 나오면 일단 때린다!”</div>
+        <div style="background: var(--bg-subtle); padding: 10px; border-radius: var(--radius-sm); font-size: 0.8rem; text-align: left; margin-bottom: 12px;">
+          <div>⚡ <strong>현역 스타:</strong> <span id="share-card-star">홀란드</span></div>
+          <div>👑 <strong>전설 스타:</strong> <span id="share-card-legend">호나우두</span></div>
+          <div>🛡️ <strong>추천 클럽:</strong> <span id="share-card-club">맨체스터 시티</span></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="copy-share-btn">결과 요약 복사하기 📋</button>
+      <button class="btn btn-secondary" id="share-close-btn" style="margin-top: 8px;">닫기</button>
+    </div>
+  </div>
+
+  <script>
+    const TYPES = {
+      FCIA: { code: 'FCIA', name: '폭격기', pos: '피보 (Pivo)', family: '판을 뒤흔드는 크랙들', tagline: '각도 나오면 일단 때린다!', desc: '골문 앞에서의 폭발적인 슈팅과 본능적인 감각으로 득점을 만들어내는 유형입니다.', starCurrent: '홀란드', starClassic: '호나우두', club: '맨체스터 시티' },
+      FCIS: { code: 'FCIS', name: '스피드 레이서', pos: '아라 (Ala)', family: '판을 뒤흔드는 크랙들', tagline: '치고 달리면 아무도 못 잡는다!', desc: '측면을 순식간에 허무는 스피드와 기습적인 슈팅으로 상대 수비를 무너뜨립니다.', starCurrent: '음바페', starClassic: '앙리', club: '레알 마드리드' },
+      FCTA: { code: 'FCTA', name: '공간 파괴자', pos: '피보 / 아라', family: '판을 뒤흔드는 크랙들', tagline: '빈 공간이 보이면 주저 없이 침투한다!', desc: '상대 전술 수비를 한순간에 무력화하는 오프더볼 침투와 결단력이 돋보입니다.', starCurrent: '살라', starClassic: '이브라히모비치', club: '리버풀' },
+      FCTS: { code: 'FCTS', name: '트릭스터', pos: '아라 (Ala)', family: '판을 뒤흔드는 크랙들', tagline: '화려한 개인기로 상대를 패닉에 빠뜨린다!', desc: '예상치 못한 테크닉과 유연한 제치기로 피치 위의 변수를 창출합니다.', starCurrent: '비니시우스', starClassic: '호나우지뉴', club: 'PSG' },
+      
+      BPIA: { code: 'BPIA', name: '필드의 셰프', pos: '아라 (Ala)', family: '중원을 요리하는 사령관들', tagline: '노룩 패스로 판을 맛깔나게 요리한다!', desc: '동료의 움직임을 한발 먼저 읽고 시원한 킬패스를 찔러주는 전술가입니다.', starCurrent: '데브라이너', starClassic: '지단', club: '맨체스터 시티' },
+      BPIS: { code: 'BPIS', name: '마에스트로', pos: '아라 / 픽소', family: '중원을 요리하는 사령관들', tagline: '한 템포 쉬어가며 전체 조율을 지배한다.', desc: '경기 전체의 템포를 지배하며 실점 위험 없이 안정적인 빌드업을 이끕니다.', starCurrent: '모드리치', starClassic: '사비', club: '레알 마드리드' },
+      BPTA: { code: 'BPTA', name: '하프코트 지배자', pos: '아라 (Ala)', family: '중원을 요리하는 사령관들', tagline: '강한 압박과 정교한 키패스로 판을 삼킨다.', desc: '전방부터 강하게 상대를 압박하며 공을 탈취한 후 곧바로 기회를 만들어냅니다.', starCurrent: '벨링엄', starClassic: '제라드', club: '아스널' },
+      BPTS: { code: 'BPTS', name: '컴퓨터 풋살러', pos: '픽소 / 아라', family: '중원을 요리하는 사령관들', tagline: '실수 없는 패스로 완벽한 판을 만든다.', desc: '수치화된 정확성의 패스와 위치 선정으로 팀의 패스 미스를 최소화합니다.', starCurrent: '크로스', starClassic: '피를로', club: '바이에른 뮌헨' },
+
+      BSIA: { code: 'BSIA', name: '산소탱크', pos: '픽소 (Fixo)', family: '골문을 지키는 스토퍼들', tagline: '공 뺏기면 제일 먼저 백코트한다!', desc: '엄청난 활동량으로 공수 양면을 오가며 팀의 구멍을 메워주는 헌신적인 플레이어입니다.', starCurrent: '발베르데', starClassic: '박지성', club: '아틀레티코' },
+      BSIS: { code: 'BSIS', name: '방곡벽', pos: '픽소 (Fixo)', family: '골문을 지키는 스토퍼들', tagline: '절대 뚫리지 않는 최후의 보루!', desc: '강한 피지컬과 차분한 태클로 상대 공격수의 기세를 완벽하게 눌러버립니다.', starCurrent: '반다이크', starClassic: '말디니', club: '인터 밀란' },
+      BSTA: { code: 'BSTA', name: '필드의 섀도우', pos: '픽소 (Fixo)', family: '골문을 지키는 스토퍼들', tagline: '상대 패스 길목을 미리 차단한다.', desc: '상대의 다음 패스 코스를 길목에서 차단하는 뛰어난 축구 지능을 가졌습니다.', starCurrent: '로드리', starClassic: '부스케츠', club: '바르셀로나' },
+      BSTS: { code: 'BSTS', name: '스위퍼 고레이로', pos: '고레이로 / 픽소', family: '골문을 지키는 스토퍼들', tagline: '발기술까지 겸비한 최후방 수호신!', desc: '골문 방어는 물론, 빌드업 시 제5의 필드 플레이어로 활약하는 빌드업형 골키퍼 스타일입니다.', starCurrent: '노이어', starClassic: '카시야스', club: '바이에른 뮌헨' },
+
+      BCIA: { code: 'BCIA', name: '게겐프레서', pos: '피보 / 아라', family: '변수를 만드는 야생마들', tagline: '전방부터 쉴 새 없이 압박해서 공을 뺏는다.', desc: '상대 최후방 빌드업을 숨막히게 압박하여 단숨에 기회를 낚아채는 타입입니다.', starCurrent: '루이스 디아스', starClassic: '테베스', club: '리버풀' },
+      BCIS: { code: 'BCIS', name: '솔로 아티스트', pos: '아라 (Ala)', family: '변수를 만드는 야생마들', tagline: '1대1 상황은 무조건 내 무대다!', desc: '수비수 한두 명쯤은 가뿐히 제치는 개별 돌파 능력으로 경기의 판도를 바꿉니다.', starCurrent: '네이마르', starClassic: '아자르', club: '바르셀로나' },
+      BCTA: { code: 'BCTA', name: '하프라인 슛터', pos: '피보 / 픽소', family: '변수를 만드는 야생마들', tagline: '어디서든 틈나면 대포알 슛을 집어넣는다.', desc: '중거리 슈팅각이 조금이라도 보이면 레이저 같은 패스를 슛으로 연결해버립니다.', starCurrent: '브루노 페르난데스', starClassic: '스콜스', club: '맨체스터 Utd' },
+      BCTS: { code: 'BCTS', name: '에너지 바일', pos: '아라 (Ala)', family: '변수를 만드는 야생마들', tagline: '지치지 않는 체력으로 피치를 휘젓는다.', desc: '경기 내내 엔진처럼 뛰며 상대의 체력을 소진시키는 에너지 넘치는 유형입니다.', starCurrent: '캉테', starClassic: '에시앙', club: '첼시' }
+    };
+
+    const KEYWORDS = {
+      F: { name: '무적의 골 결정력', desc: '“찬스가 왔을 때 주저하지 않고 슈팅으로 마무리하는 성향이 강합니다.”', question: '“골문 앞에서 살짝 머뭇거리기보다 바로 슈팅을 때려서 골을 만든 적이 있나요?”' },
+      B: { name: '패스 셰프', desc: '“직접 슛하기보다 동료에게 유기적인 패스를 이어주는 연계 능력이 우수합니다.”', question: '“내가 골을 넣는 것보다 동료에게 기가 막힌 킬패스를 차줬을 때 더 짜릿했던 경험이 있나요?”' },
+      C: { name: '탈압박 마스터', desc: '“상대 수비와의 1대1 상황에서 자신 있게 돌파를 시도합니다.”', question: '“막힌 수비를 개인기나 드리블로 제쳐내고 수비벽을 허문 순간이 있었나요?”' },
+      P: { name: '공간 창출자', desc: '“비어있는 공간으로 정교한 패스를 보낼 줄 아는 시야를 가졌습니다.”', question: '“남들이 보지 못한 빈 공간을 발견하고 한 번에 패스를 찔러준 경험이 있나요?”' },
+      I: { name: '야생의 직관', desc: '“복잡한 전술보다 피치 위 본능적인 감각으로 순간 판단을 내립니다.”', question: '“계산된 전술보다 순식간에 번뜩이는 감각으로 플레이했던 기억이 있나요?”' },
+      T: { name: '전술의 핵', desc: '“수비 위치와 공수 균형을 계산하며 스마트하게 경기를 이끕니다.”', question: '“나의 정확한 위치 선정이나 수비 가담 덕분에 팀이 안정감을 찾았던 적이 있나요?”' },
+      A: { name: '전방 압박러', desc: '“상대가 공을 잡으면 주저 없이 강하게 다가가 압박합니다.”', question: '“상대 진영부터 강하게 압박해서 공을 빼앗아 곧바로 찬스를 만든 적이 있나요?”' },
+      S: { name: '백코트 마스터', desc: '“팀이 공을 빼앗겼을 때 가장 먼저 수비 위치로 복귀하여 커버합니다.”', question: '“체력이 떨어져도 공격 후 제일 먼저 뒤로 뛰어 내려와 수비를 도왔던 일이 있었나요?”' }
+    };
+
+    const QUESTIONS = [
+      { id: 1, axis: 'FB', text: '경기 중 공격 찬스! 내 눈앞에 골문과 빈 공간의 동료가 동시에 보인다.', a: '각도만 나오면 내가 직접 강한 슈팅을 때린다. (F)', b: '더 확실한 노마크 동료에게 살짝 내준다. (B)', poleA: 'F', poleB: 'B' },
+      { id: 2, axis: 'CP', text: '상대 수비수와 1대1로 딱 맞닥뜨렸을 때 나의 선택은?', a: '화려한 풋살 드리블이나 접기로 제쳐버린다. (C)', b: '원터치 패스로 벽두개(2대1) 패스를 주고 들어간다. (P)', poleA: 'C', poleB: 'P' },
+      { id: 3, axis: 'IT', text: '경기 중 아이디어나 움직임을 가져가는 스타일은?', a: '순간적인 야성적 본능과 감각에 몸을 맡긴다. (I)', b: '우리 팀 전술 포메이션과 약속된 패턴을 먼저 본다. (T)', poleA: 'I', poleB: 'T' },
+      { id: 4, axis: 'AS', text: '상대가 후방에서 빌드업을 시작할 때 내 행동은?', a: '숨막히게 전방부터 거세게 압박해 들어간다. (A)', b: '하프라인 밑으로 조용히 내려와 자리를 지킨다. (S)', poleA: 'A', poleB: 'S' },
+      { id: 5, axis: 'FB', text: '내가 피치 위에서 가장 짜릿함을 느끼는 순간은?', a: '골망이 찢어질 듯한 멋진 득점에 성공했을 때 (F)', b: '상대 수비를 완전히 속이는 킬패스를 찔러줬을 때 (B)', poleA: 'F', poleB: 'B' },
+      { id: 6, axis: 'CP', text: '동료들이 평가하는 나의 플레이 장점은?', a: '어떤 압박도 뚫어내는 과감한 탈압박 (C)', b: '넓은 시야와 빈 곳을 정확히 찌르는 패스력 (P)', poleA: 'C', poleB: 'P' },
+      { id: 7, axis: 'IT', text: '우리 팀이 1점 뒤지고 있는 후반 3분 전, 나의 마음가짐은?', a: '내가 골문 앞으로 올라가 직접 변수를 만든다. (I)', b: '후방 템포를 잡으며 팀의 커버 위주로 침착해진다. (T)', poleA: 'I', poleB: 'T' },
+      { id: 8, axis: 'AS', text: '우리 팀이 공격 중 공을 빼앗겼을 때 내 즉각적 반응은?', a: '공을 뺏긴 그 자리에서 곧바로 재압박을 시도한다. (A)', b: '최단 거리로 백코트하여 최후방 수비 라인을 메운다. (S)', poleA: 'A', poleB: 'S' },
+      { id: 9, axis: 'FB', text: '풋살 매치 중 내가 선호하는 구도나 상황은?', a: '상대 골문 근처에서 빠른 카운터 어택 슈팅 (F)', b: '후방에서 차근차근 수평 패스를 주고받는 패스 플레이 (B)', poleA: 'F', poleB: 'B' },
+      { id: 10, axis: 'CP', text: '좁은 풋살 피치에서 수비를 허무는 나만의 무기는?', a: '화려한 잔발 처리와 수비를 유인하는 발재간 (C)', b: '상대 발 사이나 빈 공간을 노리는 힐킥/원터치 패스 (P)', poleA: 'C', poleB: 'P' },
+      { id: 11, axis: 'IT', text: '경기를 뛰며 주로 생각하는 부분은?', a: '피치 위 직관적인 느낌과 흐름 (I)', b: '상대 수비 약점과 공수 밸런스 유지 (T)', poleA: 'I', poleB: 'T' },
+      { id: 12, axis: 'AS', text: '내 체력이 70% 이상 소진되었을 때 플레이 방식은?', a: '끝까지 기세를 늦추지 않고 거칠게 붙어준다. (A)', b: '템포를 조율하며 효율적인 움직임으로 체력을 안배한다. (S)', poleA: 'A', poleB: 'S' }
+    ];
+
+    let state = {
+      currentQuestionIdx: 0,
+      scores: { F: 0, B: 0, C: 0, P: 0, I: 0, T: 0, A: 0, S: 0 },
+      typeCode: '',
+      primaryKeyword: '',
+      userInfo: { name: '', phone: '' },
+      starterContext: null
+    };
+
+    function saveState() {
+      try { localStorage.setItem('futsal_test_state', JSON.stringify(state)); } catch(e){}
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('futsal_test_state');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.typeCode) {
+            state = parsed;
+            return true;
+          }
+        }
+      } catch(e){}
+      return false;
+    }
+
+    function switchView(viewId) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function calculateResult() {
+      const s = state.scores;
+      const fbNorm = (s.F - s.B) / Math.max(1, s.F + s.B);
+      const cpNorm = (s.C - s.P) / Math.max(1, s.C + s.P);
+      const itNorm = (s.I - s.T) / Math.max(1, s.I + s.T);
+      const asNorm = (s.A - s.S) / Math.max(1, s.A + s.S);
+
+      const p1 = fbNorm >= 0 ? 'F' : 'B';
+      const p2 = cpNorm >= 0 ? 'C' : 'P';
+      const p3 = itNorm >= 0 ? 'I' : 'T';
+      const p4 = asNorm >= 0 ? 'A' : 'S';
+
+      state.typeCode = `${p1}${p2}${p3}${p4}`;
+
+      const axisPoles = [
+        { pole: p1, absVal: Math.abs(fbNorm) },
+        { pole: p2, absVal: Math.abs(cpNorm) },
+        { pole: p3, absVal: Math.abs(itNorm) },
+        { pole: p4, absVal: Math.abs(asNorm) }
+      ].sort((a, b) => b.absVal - a.absVal);
+
+      state.primaryKeyword = KEYWORDS[axisPoles[0].pole].name;
+
+      const typeObj = TYPES[state.typeCode] || TYPES.FCIA;
+      const kwObj = KEYWORDS[axisPoles[0].pole];
+
+      state.starterContext = {
+        typeCode: state.typeCode,
+        typeName: typeObj.name,
+        pos: typeObj.pos,
+        primaryKeyword: state.primaryKeyword,
+        starterQuestion: kwObj.question,
+        tagline: typeObj.tagline,
+        normScores: { fbNorm, cpNorm, itNorm, asNorm }
+      };
+
+      saveState();
+      renderResultView();
+    }
+
+    function renderResultView() {
+      const typeObj = TYPES[state.typeCode] || TYPES.FCIA;
+      const kwObj = Object.values(KEYWORDS).find(k => k.name === state.primaryKeyword) || KEYWORDS.F;
+      const norms = state.starterContext.normScores;
+
+      document.getElementById('res-type-name').textContent = typeObj.name;
+      document.getElementById('res-type-pos').textContent = `추천 포지션: ${typeObj.pos}`;
+      document.getElementById('res-type-tagline').textContent = `“${typeObj.tagline}”`;
+      document.getElementById('res-type-desc').textContent = typeObj.desc;
+
+      document.getElementById('dot-fb').style.left = `${((1 - norms.fbNorm) / 2) * 100}%`;
+      document.getElementById('dot-cp').style.left = `${((1 - norms.cpNorm) / 2) * 100}%`;
+      document.getElementById('dot-it').style.left = `${((1 - norms.itNorm) / 2) * 100}%`;
+      document.getElementById('dot-as').style.left = `${((1 - norms.asNorm) / 2) * 100}%`;
+
+      document.getElementById('res-star-current').textContent = typeObj.starCurrent;
+      document.getElementById('res-star-classic').textContent = typeObj.starClassic;
+      document.getElementById('res-club').textContent = typeObj.club;
+
+      document.getElementById('res-keyword-name').textContent = kwObj.name;
+      document.getElementById('res-keyword-desc').textContent = kwObj.desc;
+      document.getElementById('res-reflection-q').textContent = kwObj.question;
+
+      document.getElementById('share-card-type').textContent = typeObj.name;
+      document.getElementById('share-card-pos').textContent = typeObj.pos;
+      document.getElementById('share-card-tagline').textContent = `“${typeObj.tagline}”`;
+      document.getElementById('share-card-star').textContent = typeObj.starCurrent;
+      document.getElementById('share-card-legend').textContent = typeObj.starClassic;
+      document.getElementById('share-card-club').textContent = typeObj.club;
+
+      renderGallery();
+      switchView('view-result');
+    }
+
+    function renderGallery() {
+      const container = document.getElementById('gallery-container');
+      container.innerHTML = '';
+
+      const families = ['판을 뒤흔드는 크랙들', '중원을 요리하는 사령관들', '골문을 지키는 스토퍼들', '변수를 만드는 야생마들'];
+
+      families.forEach(fam => {
+        const titleEl = document.createElement('div');
+        titleEl.className = 'family-title';
+        titleEl.textContent = fam;
+        container.appendChild(titleEl);
+
+        const gridEl = document.createElement('div');
+        gridEl.className = 'gallery-grid';
+
+        Object.values(TYPES).filter(t => t.family === fam).forEach(t => {
+          const card = document.createElement('div');
+          card.className = 'type-mini-card';
+          card.innerHTML = `
+            <div class="type-mini-name">${t.name} <span style="font-size:0.7rem; color:var(--text-muted);">(${t.pos})</span></div>
+            <div class="type-mini-tag">${t.tagline}</div>
+          `;
+          gridEl.appendChild(card);
+        });
+
+        container.appendChild(gridEl);
+      });
+    }
+
+    function initChatView() {
+      const ctx = state.starterContext || {
+        typeName: '폭격기',
+        pos: '피보 (Pivo)',
+        primaryKeyword: '무적의 골 결정력',
+        starterQuestion: '“골문 앞에서 머뭇거리기보다 바로 슈팅을 때려서 골을 만든 적이 있나요?”'
+      };
+
+      const userName = state.userInfo.name || '선수';
+      document.getElementById('chat-type-tag').textContent = `${ctx.typeName} · ${ctx.primaryKeyword}`;
+
+      const messagesBox = document.getElementById('chat-messages-box');
+      messagesBox.innerHTML = '';
+
+      const firstMsg = document.createElement('div');
+      firstMsg.className = 'chat-bubble agent';
+      firstMsg.innerHTML = `
+        반갑습니다, <strong>${userName}</strong>님! 진단 결과 피치 위 대표 능력치로 <strong>'${ctx.primaryKeyword}'</strong> 성향이 유독 강하게 나왔어요.<br><br>
+        ${ctx.starterQuestion}
+      `;
+      messagesBox.appendChild(firstMsg);
+
+      const suggestionsBox = document.getElementById('chat-suggestions');
+      suggestionsBox.innerHTML = '';
+
+      const options = [
+        '최근 용병 매치에서 비슷한 경험이 있어요!',
+        '저는 주로 동료 패스를 받아 바로 슛 때리는 편이에요.',
+        '아직 내 스타일에 대해 조금 더 알아보고 싶어요.'
+      ];
+
+      options.forEach(optText => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = optText;
+        chip.onclick = () => sendChatMessage(optText);
+        suggestionsBox.appendChild(chip);
+      });
+
+      switchView('view-chat');
+    }
+
+    function sendChatMessage(text) {
+      if (!text.trim()) return;
+
+      const messagesBox = document.getElementById('chat-messages-box');
+
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble user';
+      userBubble.textContent = text;
+      messagesBox.appendChild(userBubble);
+
+      document.getElementById('chat-input-field').value = '';
+      document.getElementById('chat-suggestions').style.display = 'none';
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+
+      setTimeout(() => {
+        const agentBubble = document.createElement('div');
+        agentBubble.className = 'chat-bubble agent';
+        agentBubble.innerHTML = `
+          오, 흥미로운 경험이네요! <strong>${state.primaryKeyword}</strong> 성향을 가진 플레이어가 동료들과 어울릴 때 팀 시너지가 정말 극대화되죠.<br><br>
+          혹시 다음 풋살 경기를 뛸 때 같이 합을 맞추고 싶은 이상적인 팀원(예: 패서, 전방 압박러 등) 스타일이 있으신가요?
+        `;
+        messagesBox.appendChild(agentBubble);
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+      }, 1000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const themeBtn = document.getElementById('theme-toggle-btn');
+      themeBtn.addEventListener('click', () => {
+        const isLight = document.body.getAttribute('data-theme') === 'light';
+        document.body.setAttribute('data-theme', isLight ? 'dark' : 'light');
+        themeBtn.textContent = isLight ? 'Light Mode' : 'Dark Mode';
+      });
+
+      document.getElementById('start-btn').addEventListener('click', () => {
+        state.currentQuestionIdx = 0;
+        state.scores = { F: 0, B: 0, C: 0, P: 0, I: 0, T: 0, A: 0, S: 0 };
+        showQuestion(0);
+        switchView('view-quiz');
+      });
+
+      function showQuestion(idx) {
+        if (idx >= QUESTIONS.length) {
+          calculateResult();
+          return;
+        }
+        const q = QUESTIONS[idx];
+        document.getElementById('quiz-progress').style.width = `${((idx + 1) / QUESTIONS.length) * 100}%`;
+        document.getElementById('quiz-step-label').textContent = `MATCH SITUATION ${idx + 1} / ${QUESTIONS.length}`;
+        document.getElementById('quiz-question-text').textContent = q.text;
+        document.getElementById('option-a-btn').textContent = q.a;
+        document.getElementById('option-b-btn').textContent = q.b;
+      }
+
+      function handleAnswer(pole) {
+        state.scores[pole] = (state.scores[pole] || 0) + 1;
+        state.currentQuestionIdx++;
+        showQuestion(state.currentQuestionIdx);
+      }
+
+      document.getElementById('option-a-btn').addEventListener('click', () => handleAnswer(QUESTIONS[state.currentQuestionIdx].poleA));
+      document.getElementById('option-b-btn').addEventListener('click', () => handleAnswer(QUESTIONS[state.currentQuestionIdx].poleB));
+
+      document.getElementById('toggle-gallery-btn').addEventListener('click', () => {
+        document.getElementById('gallery-accordion').classList.toggle('open');
+      });
+
+      const loginModal = document.getElementById('login-modal');
+      document.getElementById('go-chat-cta').addEventListener('click', () => {
+        loginModal.classList.add('active');
+      });
+      document.getElementById('modal-close-btn').addEventListener('click', () => {
+        loginModal.classList.remove('active');
+      });
+      document.getElementById('mock-login-btn').addEventListener('click', () => {
+        const nameVal = document.getElementById('user-name-input').value.trim();
+        const phoneVal = document.getElementById('user-phone-input').value.trim();
+
+        if (!nameVal) {
+          alert('이름 또는 닉네임을 입력해주세요!');
+          return;
+        }
+
+        state.userInfo.name = nameVal;
+        state.userInfo.phone = phoneVal;
+        saveState();
+
+        loginModal.classList.remove('active');
+        initChatView();
+      });
+
+      const shareModal = document.getElementById('share-modal');
+      document.getElementById('share-card-btn').addEventListener('click', () => {
+        shareModal.classList.add('active');
+      });
+      document.getElementById('share-close-btn').addEventListener('click', () => {
+        shareModal.classList.remove('active');
+      });
+      document.getElementById('copy-share-btn').addEventListener('click', () => {
+        const text = `[나의 풋살 플레이 스타일]\n유형: ${state.starterContext.typeName} (${state.starterContext.pos})\n대표 능력치: ${state.primaryKeyword}\n“${state.starterContext.tagline}”\n\n나와 닮은 스타: ${document.getElementById('share-card-star').textContent}`;
+        navigator.clipboard.writeText(text).then(() => {
+          alert('결과 카드 내용이 클립보드에 복사되었습니다! 친구들에게 공유해보세요 ⚽');
+          shareModal.classList.remove('active');
+        });
+      });
+
+      document.getElementById('chat-send-btn').addEventListener('click', () => {
+        sendChatMessage(document.getElementById('chat-input-field').value);
+      });
+      document.getElementById('chat-input-field').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendChatMessage(e.target.value);
+      });
+
+      if (loadState()) {
+        renderResultView();
+      }
+    });
+  </script>
+</body>
+</html>
