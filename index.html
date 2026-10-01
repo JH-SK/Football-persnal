@@ -72,6 +72,7 @@
     .type-pos { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-align: center; margin-bottom: 12px; }
     .type-tagline { font-size: 1.05rem; font-weight: 700; color: var(--brand-lime); text-align: center; margin-bottom: 16px; word-break: keep-all; }
     .type-desc { font-size: 0.92rem; color: var(--text-secondary); text-align: center; line-height: 1.6; word-break: keep-all; }
+
     /* 풋살장 전술판 스타일 */
     .futsal-pitch-card {
       background: #092e1b;
@@ -90,6 +91,21 @@
       height: auto;
       max-height: 220px;
     }
+
+    /* 궁합 및 통계 카드 스타일 */
+    .chem-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; }
+    .chem-card { background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); text-align: center; }
+    .chem-title { font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; }
+    .chem-title.best { color: var(--brand-lime); }
+    .chem-title.worst { color: #f87171; }
+    .chem-name { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); }
+    .chem-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+    .stat-bar-container { margin-top: 12px; }
+    .stat-row { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; font-weight: 600; }
+    .stat-bg { width: 100%; height: 8px; background: var(--bg-subtle); border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+    .stat-fill { height: 100%; background: var(--brand-lime); border-radius: 4px; transition: width 0.6s ease; }
+
     .section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; }
     .spectrum-item { margin-bottom: 16px; }
     .spectrum-labels { display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
@@ -232,6 +248,37 @@
         </div>
       </div>
 
+      <!-- 누적 통계 & 찰떡 궁합 카드 (신규 추가) -->
+      <div class="card">
+        <div class="section-title">
+          <span>풋살러 궁합 & 희귀도 통계</span>
+          <span style="font-size:0.75rem; color:var(--brand-lime);" id="res-rarity-badge">상위 5.8% 희귀</span>
+        </div>
+        
+        <div class="chem-grid">
+          <div class="chem-card">
+            <div class="chem-title best">⚡ 환상의 찰떡 콤비</div>
+            <div class="chem-name" id="res-chem-best-name">컴퓨터 풋살러</div>
+            <div class="chem-desc" id="res-chem-best-pos">픽소 / 공수 밸런스 완벽</div>
+          </div>
+          <div class="chem-card">
+            <div class="chem-title worst">🔥 티격태격 라이벌</div>
+            <div class="chem-name" id="res-chem-worst-name">폭격기</div>
+            <div class="chem-desc" id="res-chem-worst-pos">피보 / 동선 중복 유의</div>
+          </div>
+        </div>
+
+        <div class="stat-bar-container" style="margin-top: 16px;">
+          <div class="stat-row">
+            <span>전체 풋살러 중 내 유형 비중</span>
+            <span id="res-type-percent" style="color:var(--brand-lime);">5.8%</span>
+          </div>
+          <div class="stat-bg">
+            <div class="stat-fill" id="res-type-bar" style="width: 25%;"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="card keyword-card">
         <div class="keyword-title">피치 위 내 대표 능력치</div>
         <div class="keyword-main" id="res-keyword-name">무적의 골 결정력</div>
@@ -323,6 +370,8 @@
           <div>⚡ <strong>현역 스타:</strong> <span id="share-card-star">홀란드</span></div>
           <div>👑 <strong>전설 스타:</strong> <span id="share-card-legend">호나우두</span></div>
           <div>🛡️ <strong>추천 클럽:</strong> <span id="share-card-club">맨체스터 시티</span></div>
+          <div>⚡ <strong>찰떡 콤비:</strong> <span id="share-card-best">컴퓨터 풋살러</span></div>
+          <div>🔥 <strong>라이벌:</strong> <span id="share-card-worst">폭격기</span></div>
         </div>
       </div>
       <button class="btn btn-primary" id="copy-share-btn">결과 요약 복사하기 📋</button>
@@ -587,7 +636,15 @@
       document.getElementById(viewId).classList.add('active');
       window.scrollTo(0, 0);
     }
-function generatePitchSVG(activePos) {
+
+    // 4축 코드 반대 성향(찰떡 궁합) 반환 함수
+    function getInvertedCode(code) {
+      const invertMap = { F:'B', B:'F', C:'P', P:'C', I:'T', T:'I', A:'S', S:'A' };
+      return code.split('').map(char => invertMap[char] || char).join('');
+    }
+
+    // 전술판 SVG 생성 함수
+    function generatePitchSVG(activePos) {
       const isPivo = activePos.includes('pivo');
       const isAla = activePos.includes('ala');
       const isFixo = activePos.includes('fixo');
@@ -617,33 +674,29 @@ function generatePitchSVG(activePos) {
           <path d="M 50 10 A 60 60 0 0 0 170 10" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5"/>
           <path d="M 50 240 A 60 60 0 0 1 170 240" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5"/>
 
-          <!-- Pivo -->
           <circle cx="110" cy="45" r="${pivo.r}" fill="${pivo.fill}" stroke="${pivo.stroke}" stroke-width="2"/>
           <text x="110" y="49" font-size="9" font-weight="${pivo.fontWeight}" fill="${pivo.textFill}" text-anchor="middle">Pivo</text>
           <text x="110" y="66" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">피보</text>
 
-          <!-- Ala Left -->
           <circle cx="45" cy="115" r="${alaL.r}" fill="${alaL.fill}" stroke="${alaL.stroke}" stroke-width="2"/>
           <text x="45" y="119" font-size="8" font-weight="${alaL.fontWeight}" fill="${alaL.textFill}" text-anchor="middle">Ala</text>
           <text x="45" y="134" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">아라</text>
 
-          <!-- Ala Right -->
           <circle cx="175" cy="115" r="${alaR.r}" fill="${alaR.fill}" stroke="${alaR.stroke}" stroke-width="2"/>
           <text x="175" y="119" font-size="8" font-weight="${alaR.fontWeight}" fill="${alaR.textFill}" text-anchor="middle">Ala</text>
           <text x="175" y="134" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">아라</text>
 
-          <!-- Fixo -->
           <circle cx="110" cy="170" r="${fixo.r}" fill="${fixo.fill}" stroke="${fixo.stroke}" stroke-width="2"/>
           <text x="110" y="174" font-size="9" font-weight="${fixo.fontWeight}" fill="${fixo.textFill}" text-anchor="middle">Fixo</text>
           <text x="110" y="190" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">픽소</text>
 
-          <!-- Goleiro -->
           <circle cx="110" cy="218" r="${goleiro.r}" fill="${goleiro.fill}" stroke="${goleiro.stroke}" stroke-width="2"/>
           <text x="110" y="221" font-size="7" font-weight="${goleiro.fontWeight}" fill="${goleiro.textFill}" text-anchor="middle">Goleiro</text>
           <text x="110" y="235" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">골레이로</text>
         </svg>
       `;
     }
+
     function calculateResult() {
       const s = state.scores;
       const fbNorm = (s.F - s.B) / Math.max(1, s.F + s.B);
@@ -714,6 +767,37 @@ function generatePitchSVG(activePos) {
       document.getElementById('share-card-star').textContent = typeObj.starCurrent;
       document.getElementById('share-card-legend').textContent = typeObj.starClassic;
       document.getElementById('share-card-club').textContent = typeObj.club;
+
+      // 찰떡 궁합 & 희귀도 연산 및 출력
+      const bestCode = getInvertedCode(state.typeCode);
+      const bestType = TYPES[bestCode] || TYPES.BPTS;
+      const worstType = typeObj;
+
+      const typeRarityMap = {
+        FCIA: 8.5, FCIS: 9.2, FCTA: 6.1, FCTS: 5.4,
+        BPIA: 7.8, BPIS: 6.5, BPTA: 7.1, BPTS: 4.2,
+        BSIA: 8.1, BSIS: 6.8, BSTA: 5.2, BSTS: 3.8,
+        BCIA: 6.9, BCIS: 5.9, BCTA: 4.7, BCTS: 8.8
+      };
+      const ratio = typeRarityMap[state.typeCode] || 6.0;
+
+      document.getElementById('res-rarity-badge').textContent = `전체 중 상위 ${ratio}% 희귀`;
+      document.getElementById('res-chem-best-name').textContent = bestType.name;
+      document.getElementById('res-chem-best-pos').textContent = `${bestType.pos} / 환상의 짝꿍`;
+      document.getElementById('res-chem-worst-name').textContent = worstType.name;
+      document.getElementById('res-chem-worst-pos').textContent = `${worstType.pos} / 동선 중복 라이벌`;
+
+      document.getElementById('res-type-percent').textContent = `${ratio}%`;
+      document.getElementById('res-type-bar').style.width = `${Math.min(100, ratio * 5)}%`;
+
+      document.getElementById('share-card-best').textContent = `${bestType.name} (${bestType.pos})`;
+      document.getElementById('share-card-worst').textContent = `${worstType.name} (${worstType.pos})`;
+
+      // 전술판 그림 그리기
+      const pitchEl = document.getElementById('res-pitch-container');
+      if (pitchEl) {
+        pitchEl.innerHTML = generatePitchSVG(typeObj.pitchPos || 'pivo');
+      }
 
       renderGallery();
       switchView('view-result');
@@ -907,7 +991,8 @@ function generatePitchSVG(activePos) {
         shareModal.classList.remove('active');
       });
       document.getElementById('copy-share-btn').addEventListener('click', () => {
-        const text = `[나의 풋살 플레이 스타일]\n유형: ${state.starterContext.typeName} (${state.starterContext.pos})\n대표 능력치: ${state.primaryKeyword}\n“${state.starterContext.tagline}”\n\n나와 닮은 스타: ${document.getElementById('share-card-star').textContent}`;
+        const bestText = document.getElementById('share-card-best').textContent;
+        const text = `[나의 풋살 플레이 스타일]\n유형: ${state.starterContext.typeName} (${state.starterContext.pos})\n대표 능력치: ${state.primaryKeyword}\n“${state.starterContext.tagline}”\n\n⚡ 찰떡 콤비: ${bestText}\n나랑 오늘 풋살 한 매치 뛰어볼래? ⚽`;
         navigator.clipboard.writeText(text).then(() => {
           alert('결과 카드 내용이 클립보드에 복사되었습니다! 친구들에게 공유해보세요 ⚽');
           shareModal.classList.remove('active');
