@@ -72,7 +72,24 @@
     .type-pos { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-align: center; margin-bottom: 12px; }
     .type-tagline { font-size: 1.05rem; font-weight: 700; color: var(--brand-lime); text-align: center; margin-bottom: 16px; word-break: keep-all; }
     .type-desc { font-size: 0.92rem; color: var(--text-secondary); text-align: center; line-height: 1.6; word-break: keep-all; }
-    
+    /* 풋살장 전술판 스타일 */
+    .futsal-pitch-card {
+      background: #092e1b;
+      border-radius: var(--radius-md);
+      padding: 16px 10px;
+      margin: 16px auto;
+      max-width: 250px;
+      border: 1px solid rgba(163, 230, 53, 0.4);
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .futsal-pitch-svg {
+      width: 100%;
+      height: auto;
+      max-height: 220px;
+    }
     .section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; }
     .spectrum-item { margin-bottom: 16px; }
     .spectrum-labels { display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
@@ -171,6 +188,8 @@
         <div class="hero-motif" id="res-motif">⚽</div>
         <h2 class="type-title" id="res-type-name">폭격기</h2>
         <div class="type-pos" id="res-type-pos">추천 포지션: 피보 (Pivo) / 아라 (Ala)</div>
+        <!-- 전술판이 표시될 위치 -->
+        <div class="futsal-pitch-card" id="res-pitch-container"></div>
         <div class="type-tagline" id="res-type-tagline">“각도 나오면 일단 때린다!”</div>
         <p class="type-desc" id="res-type-desc">골문 앞에서의 폭발적인 슈팅과 본능적인 감각으로 득점을 만들어내는 유형입니다.</p>
       </div>
@@ -309,25 +328,25 @@
 
   <script>
     const TYPES = {
-      FCIA: { code: 'FCIA', name: '폭격기', pos: '피보 (Pivo)', family: '판을 뒤흔드는 크랙들', tagline: '각도 나오면 일단 때린다!', desc: '골문 앞에서의 폭발적인 슈팅과 본능적인 감각으로 득점을 만들어내는 유형입니다.', starCurrent: '홀란드', starClassic: '호나우두', club: '맨체스터 시티' },
-      FCIS: { code: 'FCIS', name: '스피드 레이서', pos: '아라 (Ala)', family: '판을 뒤흔드는 크랙들', tagline: '치고 달리면 아무도 못 잡는다!', desc: '측면을 순식간에 허무는 스피드와 기습적인 슈팅으로 상대 수비를 무너뜨립니다.', starCurrent: '음바페', starClassic: '앙리', club: '레알 마드리드' },
-      FCTA: { code: 'FCTA', name: '공간 파괴자', pos: '피보 / 아라', family: '판을 뒤흔드는 크랙들', tagline: '빈 공간이 보이면 주저 없이 침투한다!', desc: '상대 전술 수비를 한순간에 무력화하는 오프더볼 침투와 결단력이 돋보입니다.', starCurrent: '살라', starClassic: '이브라히모비치', club: '리버풀' },
-      FCTS: { code: 'FCTS', name: '트릭스터', pos: '아라 (Ala)', family: '판을 뒤흔드는 크랙들', tagline: '화려한 개인기로 상대를 패닉에 빠뜨린다!', desc: '예상치 못한 테크닉과 유연한 제치기로 피치 위의 변수를 창출합니다.', starCurrent: '비니시우스', starClassic: '호나우지뉴', club: 'PSG' },
+      FCIA: { code: 'FCIA', name: '폭격기', pos: '피보 (Pivo)', pitchPos: 'pivo', family: '판을 뒤흔드는 크랙들', tagline: '각도 나오면 일단 때린다!', desc: '골문 앞에서의 폭발적인 슈팅과 본능적인 감각으로 득점을 만들어내는 유형입니다.', starCurrent: '홀란드', starClassic: '호나우두', club: '맨체스터 시티' },
+      FCIS: { code: 'FCIS', name: '스피드 레이서', pos: '아라 (Ala)', pitchPos: 'ala', family: '판을 뒤흔드는 크랙들', tagline: '치고 달리면 아무도 못 잡는다!', desc: '측면을 순식간에 허무는 스피드와 기습적인 슈팅으로 상대 수비를 무너뜨립니다.', starCurrent: '음바페', starClassic: '앙리', club: '레알 마드리드' },
+      FCTA: { code: 'FCTA', name: '공간 파괴자', pos: '피보 / 아라', pitchPos: 'pivo-ala', family: '판을 뒤흔드는 크랙들', tagline: '빈 공간이 보이면 주저 없이 침투한다!', desc: '상대 전술 수비를 한순간에 무력화하는 오프더볼 침투와 결단력이 돋보입니다.', starCurrent: '살라', starClassic: '이브라히모비치', club: '리버풀' },
+      FCTS: { code: 'FCTS', name: '트릭스터', pos: '아라 (Ala)', pitchPos: 'ala', family: '판을 뒤흔드는 크랙들', tagline: '화려한 개인기로 상대를 패닉에 빠뜨린다!', desc: '예상치 못한 테크닉과 유연한 제치기로 피치 위의 변수를 창출합니다.', starCurrent: '비니시우스', starClassic: '호나우지뉴', club: 'PSG' },
       
-      BPIA: { code: 'BPIA', name: '필드의 셰프', pos: '아라 (Ala)', family: '중원을 요리하는 사령관들', tagline: '노룩 패스로 판을 맛깔나게 요리한다!', desc: '동료의 움직임을 한발 먼저 읽고 시원한 킬패스를 찔러주는 전술가입니다.', starCurrent: '데브라이너', starClassic: '지단', club: '맨체스터 시티' },
-      BPIS: { code: 'BPIS', name: '마에스트로', pos: '아라 / 픽소', family: '중원을 요리하는 사령관들', tagline: '한 템포 쉬어가며 전체 조율을 지배한다.', desc: '경기 전체의 템포를 지배하며 실점 위험 없이 안정적인 빌드업을 이끕니다.', starCurrent: '모드리치', starClassic: '사비', club: '레알 마드리드' },
-      BPTA: { code: 'BPTA', name: '하프코트 지배자', pos: '아라 (Ala)', family: '중원을 요리하는 사령관들', tagline: '강한 압박과 정교한 키패스로 판을 삼킨다.', desc: '전방부터 강하게 상대를 압박하며 공을 탈취한 후 곧바로 기회를 만들어냅니다.', starCurrent: '벨링엄', starClassic: '제라드', club: '아스널' },
-      BPTS: { code: 'BPTS', name: '컴퓨터 풋살러', pos: '픽소 / 아라', family: '중원을 요리하는 사령관들', tagline: '실수 없는 패스로 완벽한 판을 만든다.', desc: '수치화된 정확성의 패스와 위치 선정으로 팀의 패스 미스를 최소화합니다.', starCurrent: '크로스', starClassic: '피를로', club: '바이에른 뮌헨' },
+      BPIA: { code: 'BPIA', name: '필드의 셰프', pos: '아라 (Ala)', pitchPos: 'ala', family: '중원을 요리하는 사령관들', tagline: '노룩 패스로 판을 맛깔나게 요리한다!', desc: '동료의 움직임을 한발 먼저 읽고 시원한 킬패스를 찔러주는 전술가입니다.', starCurrent: '데브라이너', starClassic: '지단', club: '맨체스터 시티' },
+      BPIS: { code: 'BPIS', name: '마에스트로', pos: '아라 / 픽소', pitchPos: 'ala-fixo', family: '중원을 요리하는 사령관들', tagline: '한 템포 쉬어가며 전체 조율을 지배한다.', desc: '경기 전체의 템포를 지배하며 실점 위험 없이 안정적인 빌드업을 이끕니다.', starCurrent: '모드리치', starClassic: '사비', club: '레알 마드리드' },
+      BPTA: { code: 'BPTA', name: '하프코트 지배자', pos: '아라 (Ala)', pitchPos: 'ala', family: '중원을 요리하는 사령관들', tagline: '강한 압박과 정교한 키패스로 판을 삼킨다.', desc: '전방부터 강하게 상대를 압박하며 공을 탈취한 후 곧바로 기회를 만들어냅니다.', starCurrent: '벨링엄', starClassic: '제라드', club: '아스널' },
+      BPTS: { code: 'BPTS', name: '컴퓨터 풋살러', pos: '픽소 / 아라', pitchPos: 'fixo', family: '중원을 요리하는 사령관들', tagline: '실수 없는 패스로 완벽한 판을 만든다.', desc: '수치화된 정확성의 패스와 위치 선정으로 팀의 패스 미스를 최소화합니다.', starCurrent: '크로스', starClassic: '피를로', club: '바이에른 뮌헨' },
 
-      BSIA: { code: 'BSIA', name: '산소탱크', pos: '픽소 (Fixo)', family: '골문을 지키는 스토퍼들', tagline: '공 뺏기면 제일 먼저 백코트한다!', desc: '엄청난 활동량으로 공수 양면을 오가며 팀의 구멍을 메워주는 헌신적인 플레이어입니다.', starCurrent: '발베르데', starClassic: '박지성', club: '아틀레티코' },
-      BSIS: { code: 'BSIS', name: '방곡벽', pos: '픽소 (Fixo)', family: '골문을 지키는 스토퍼들', tagline: '절대 뚫리지 않는 최후의 보루!', desc: '강한 피지컬과 차분한 태클로 상대 공격수의 기세를 완벽하게 눌러버립니다.', starCurrent: '반다이크', starClassic: '말디니', club: '인터 밀란' },
-      BSTA: { code: 'BSTA', name: '필드의 섀도우', pos: '픽소 (Fixo)', family: '골문을 지키는 스토퍼들', tagline: '상대 패스 길목을 미리 차단한다.', desc: '상대의 다음 패스 코스를 길목에서 차단하는 뛰어난 축구 지능을 가졌습니다.', starCurrent: '로드리', starClassic: '부스케츠', club: '바르셀로나' },
-      BSTS: { code: 'BSTS', name: '스위퍼 고레이로', pos: '고레이로 / 픽소', family: '골문을 지키는 스토퍼들', tagline: '발기술까지 겸비한 최후방 수호신!', desc: '골문 방어는 물론, 빌드업 시 제5의 필드 플레이어로 활약하는 빌드업형 골키퍼 스타일입니다.', starCurrent: '노이어', starClassic: '카시야스', club: '바이에른 뮌헨' },
+      BSIA: { code: 'BSIA', name: '산소탱크', pos: '픽소 (Fixo)', pitchPos: 'fixo', family: '골문을 지키는 스토퍼들', tagline: '공 뺏기면 제일 먼저 백코트한다!', desc: '엄청난 활동량으로 공수 양면을 오가며 팀의 구멍을 메워주는 헌신적인 플레이어입니다.', starCurrent: '발베르데', starClassic: '박지성', club: '아틀레티코' },
+      BSIS: { code: 'BSIS', name: '방곡벽', pos: '픽소 (Fixo)', pitchPos: 'fixo', family: '골문을 지키는 스토퍼들', tagline: '절대 뚫리지 않는 최후의 보루!', desc: '강한 피지컬과 차분한 태클로 상대 공격수의 기세를 완벽하게 눌러버립니다.', starCurrent: '반다이크', starClassic: '말디니', club: '인터 밀란' },
+      BSTA: { code: 'BSTA', name: '필드의 섀도우', pos: '픽소 (Fixo)', pitchPos: 'fixo', family: '골문을 지키는 스토퍼들', tagline: '상대 패스 길목을 미리 차단한다.', desc: '상대의 다음 패스 코스를 길목에서 차단하는 뛰어난 축구 지능을 가졌습니다.', starCurrent: '로드리', starClassic: '부스케츠', club: '바르셀로나' },
+      BSTS: { code: 'BSTS', name: '스위퍼 고레이로', pos: '고레이로 / 픽소', pitchPos: 'goleiro', family: '골문을 지키는 스토퍼들', tagline: '발기술까지 겸비한 최후방 수호신!', desc: '골문 방어는 물론, 빌드업 시 제5의 필드 플레이어로 활약하는 빌드업형 골키퍼 스타일입니다.', starCurrent: '노이어', starClassic: '카시야스', club: '바이에른 뮌헨' },
 
-      BCIA: { code: 'BCIA', name: '게겐프레서', pos: '피보 / 아라', family: '변수를 만드는 야생마들', tagline: '전방부터 쉴 새 없이 압박해서 공을 뺏는다.', desc: '상대 최후방 빌드업을 숨막히게 압박하여 단숨에 기회를 낚아채는 타입입니다.', starCurrent: '루이스 디아스', starClassic: '테베스', club: '리버풀' },
-      BCIS: { code: 'BCIS', name: '솔로 아티스트', pos: '아라 (Ala)', family: '변수를 만드는 야생마들', tagline: '1대1 상황은 무조건 내 무대다!', desc: '수비수 한두 명쯤은 가뿐히 제치는 개별 돌파 능력으로 경기의 판도를 바꿉니다.', starCurrent: '네이마르', starClassic: '아자르', club: '바르셀로나' },
-      BCTA: { code: 'BCTA', name: '하프라인 슛터', pos: '피보 / 픽소', family: '변수를 만드는 야생마들', tagline: '어디서든 틈나면 대포알 슛을 집어넣는다.', desc: '중거리 슈팅각이 조금이라도 보이면 레이저 같은 패스를 슛으로 연결해버립니다.', starCurrent: '브루노 페르난데스', starClassic: '스콜스', club: '맨체스터 Utd' },
-      BCTS: { code: 'BCTS', name: '에너지 바일', pos: '아라 (Ala)', family: '변수를 만드는 야생마들', tagline: '지치지 않는 체력으로 피치를 휘젓는다.', desc: '경기 내내 엔진처럼 뛰며 상대의 체력을 소진시키는 에너지 넘치는 유형입니다.', starCurrent: '캉테', starClassic: '에시앙', club: '첼시' }
+      BCIA: { code: 'BCIA', name: '게겐프레서', pos: '피보 / 아라', pitchPos: 'pivo-ala', family: '변수를 만드는 야생마들', tagline: '전방부터 쉴 새 없이 압박해서 공을 뺏는다.', desc: '상대 최후방 빌드업을 숨막히게 압박하여 단숨에 기회를 낚아채는 타입입니다.', starCurrent: '루이스 디아스', starClassic: '테베스', club: '리버풀' },
+      BCIS: { code: 'BCIS', name: '솔로 아티스트', pos: '아라 (Ala)', pitchPos: 'ala', family: '변수를 만드는 야생마들', tagline: '1대1 상황은 무조건 내 무대다!', desc: '수비수 한두 명쯤은 가뿐히 제치는 개별 돌파 능력으로 경기의 판도를 바꿉니다.', starCurrent: '네이마르', starClassic: '아자르', club: '바르셀로나' },
+      BCTA: { code: 'BCTA', name: '하프라인 슛터', pos: '피보 / 픽소', pitchPos: 'pivo-fixo', family: '변수를 만드는 야생마들', tagline: '어디서든 틈나면 대포알 슛을 집어넣는다.', desc: '중거리 슈팅각이 조금이라도 보이면 레이저 같은 패스를 슛으로 연결해버립니다.', starCurrent: '브루노 페르난데스', starClassic: '스콜스', club: '맨체스터 Utd' },
+      BCTS: { code: 'BCTS', name: '에너지 바일', pos: '아라 (Ala)', pitchPos: 'ala', family: '변수를 만드는 야생마들', tagline: '지치지 않는 체력으로 피치를 휘젓는다.', desc: '경기 내내 엔진처럼 뛰며 상대의 체력을 소진시키는 에너지 넘치는 유형입니다.', starCurrent: '캉테', starClassic: '에시앙', club: '첼시' }
     };
 
     const KEYWORDS = {
@@ -388,7 +407,63 @@
       document.getElementById(viewId).classList.add('active');
       window.scrollTo(0, 0);
     }
+function generatePitchSVG(activePos) {
+      const isPivo = activePos.includes('pivo');
+      const isAla = activePos.includes('ala');
+      const isFixo = activePos.includes('fixo');
+      const isGoleiro = activePos.includes('goleiro');
 
+      const getNode = (isActive) => ({
+        fill: isActive ? '#a3e635' : 'rgba(255, 255, 255, 0.2)',
+        stroke: isActive ? '#0f172a' : 'rgba(255, 255, 255, 0.3)',
+        r: isActive ? 13 : 9,
+        textFill: isActive ? '#0f172a' : 'rgba(255, 255, 255, 0.6)',
+        fontWeight: isActive ? '800' : '500'
+      });
+
+      const pivo = getNode(isPivo);
+      const alaL = getNode(isAla);
+      const alaR = getNode(isAla);
+      const fixo = getNode(isFixo);
+      const goleiro = getNode(isGoleiro);
+
+      return `
+        <svg class="futsal-pitch-svg" viewBox="0 0 220 250" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="200" height="230" rx="6" fill="#14532d" stroke="#ffffff" stroke-width="2" stroke-opacity="0.6"/>
+          <line x1="10" y1="125" x2="210" y2="125" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5"/>
+          <circle cx="110" cy="125" r="30" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5"/>
+          <circle cx="110" cy="125" r="2" fill="#ffffff" fill-opacity="0.7"/>
+
+          <path d="M 50 10 A 60 60 0 0 0 170 10" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5"/>
+          <path d="M 50 240 A 60 60 0 0 1 170 240" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5"/>
+
+          <!-- Pivo -->
+          <circle cx="110" cy="45" r="${pivo.r}" fill="${pivo.fill}" stroke="${pivo.stroke}" stroke-width="2"/>
+          <text x="110" y="49" font-size="9" font-weight="${pivo.fontWeight}" fill="${pivo.textFill}" text-anchor="middle">Pivo</text>
+          <text x="110" y="66" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">피보</text>
+
+          <!-- Ala Left -->
+          <circle cx="45" cy="115" r="${alaL.r}" fill="${alaL.fill}" stroke="${alaL.stroke}" stroke-width="2"/>
+          <text x="45" y="119" font-size="8" font-weight="${alaL.fontWeight}" fill="${alaL.textFill}" text-anchor="middle">Ala</text>
+          <text x="45" y="134" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">아라</text>
+
+          <!-- Ala Right -->
+          <circle cx="175" cy="115" r="${alaR.r}" fill="${alaR.fill}" stroke="${alaR.stroke}" stroke-width="2"/>
+          <text x="175" y="119" font-size="8" font-weight="${alaR.fontWeight}" fill="${alaR.textFill}" text-anchor="middle">Ala</text>
+          <text x="175" y="134" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">아라</text>
+
+          <!-- Fixo -->
+          <circle cx="110" cy="170" r="${fixo.r}" fill="${fixo.fill}" stroke="${fixo.stroke}" stroke-width="2"/>
+          <text x="110" y="174" font-size="9" font-weight="${fixo.fontWeight}" fill="${fixo.textFill}" text-anchor="middle">Fixo</text>
+          <text x="110" y="190" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">픽소</text>
+
+          <!-- Goleiro -->
+          <circle cx="110" cy="218" r="${goleiro.r}" fill="${goleiro.fill}" stroke="${goleiro.stroke}" stroke-width="2"/>
+          <text x="110" y="221" font-size="7" font-weight="${goleiro.fontWeight}" fill="${goleiro.textFill}" text-anchor="middle">Goleiro</text>
+          <text x="110" y="235" font-size="8" font-weight="600" fill="#ffffff" fill-opacity="0.8" text-anchor="middle">골레이로</text>
+        </svg>
+      `;
+    }
     function calculateResult() {
       const s = state.scores;
       const fbNorm = (s.F - s.B) / Math.max(1, s.F + s.B);
@@ -438,6 +513,7 @@
       document.getElementById('res-type-pos').textContent = `추천 포지션: ${typeObj.pos}`;
       document.getElementById('res-type-tagline').textContent = `“${typeObj.tagline}”`;
       document.getElementById('res-type-desc').textContent = typeObj.desc;
+      document.getElementById('res-pitch-container').innerHTML = generatePitchSVG(typeObj.pitchPos || 'pivo');
 
       document.getElementById('dot-fb').style.left = `${((1 - norms.fbNorm) / 2) * 100}%`;
       document.getElementById('dot-cp').style.left = `${((1 - norms.cpNorm) / 2) * 100}%`;
